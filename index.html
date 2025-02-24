@@ -17,13 +17,23 @@
         margin-bottom: 20px; /* Space below the search form */
         text-align: center;
       }
+      /* A container to hold the icon and the input side by side */
+      .input-container {
+        display: inline-flex;
+        align-items: center;
+      }
+      /* Style the icon */
+      .search-icon {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+      }
       /* Larger text for the input field */
       #searchForm input[type="text"] {
         padding: 10px;
         font-size: 2em; /* Increased font size */
         border: none;
         border-radius: 4px;
-        margin-right: 10px;
         color: #8B0000;
       }
       /* Larger text for the search button with white bold text */
@@ -47,7 +57,11 @@
   </head>
   <body>
     <form id="searchForm">
-      <input type="text" id="studentID" placeholder="Enter your student ID">
+      <div class="input-container">
+        <!-- Replace 'icon.png' with the correct path or URL to your image -->
+        <img src="icon.png" alt="ID icon" class="search-icon">
+        <input type="text" id="studentID" placeholder="Enter your student ID">
+      </div>
       <button type="submit">Search</button>
     </form>
     <div id="result"></div>

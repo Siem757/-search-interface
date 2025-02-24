@@ -4,6 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Nameplate Search</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #fff;
+      }
+      /* Style the search form with dark red background and center alignment */
+      #searchForm {
+        background-color: #8B0000; /* Dark red */
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px; /* Space below the search form */
+        text-align: center;
+      }
+      /* Style the text input to be larger */
+      #searchForm input[type="text"] {
+        padding: 10px;
+        font-size: 1.3em; /* Bigger text */
+        border: none;
+        border-radius: 4px;
+        margin-right: 10px;
+        color: #8B0000;
+      }
+      /* Style the search button with white bold text and a slightly lighter red background */
+      #searchForm button {
+        padding: 10px 20px;
+        font-size: 1.3em; /* Bigger text */
+        font-weight: bold;
+        color: #fff; /* White text */
+        background-color: #a80000;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      /* Add space and center alignment for the result area */
+      #result {
+        margin-top: 20px;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
     <form id="searchForm">
@@ -16,7 +55,6 @@
       document.getElementById('searchForm').addEventListener('submit', function(e) {
         e.preventDefault();
         var studentID = document.getElementById('studentID').value;
-        // Your new web app URL:
         var url = 'https://script.google.com/macros/s/AKfycbzBvHQAKJzL7wD1CKaHG77gxsABDx_GNvOWb7AOgHdwWyvi0xnU9BVBjCm0jalAHqhJ/exec?id=' 
                   + encodeURIComponent(studentID);
         

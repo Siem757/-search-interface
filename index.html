@@ -23,21 +23,22 @@
       }
       /* Flex container for all three elements */
       .search-row {
-        display: inline-flex;
+        display: flex;
         align-items: center;
+        justify-content: center;
         gap: 10px;
       }
-      /* Icon styling */
+      /* Magnifier icon styling */
       .search-icon {
-        width: 48px;
-        height: 48px;
+        width: 32px;
+        height: 32px;
         flex-shrink: 0;
       }
       /* Style input and button to have the same height */
       #searchForm input[type="text"],
       #searchForm button {
-        height: 48px;
-        font-size: 1.5em;
+        height: 40px;
+        font-size: 1.2em;
         padding: 0 10px;
         margin: 0;
       }
@@ -60,14 +61,55 @@
       #result {
         margin-top: 20px;
         text-align: center;
-        font-size: 2em;
+        font-size: 1.5em;
       }
     </style>
   </head>
   <body>
     <form id="searchForm">
       <div class="search-row">
-        <!-- Use base64-encoded SVG icon for better compatibility -->
+        <!-- Use a magnifier icon -->
         <img
           class="search-icon"
-          src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMjAiIGN5PSIxNSIgcj0iNSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiIC8+PGxpbmUgeDE9IjIwIiB5MT0iMjAiIHgyPSIyMCIgeTI9IjM1IiBzdHJva2Utd2lkdGg9IjIiIC8+PGxpbmUgeDE9IjIwIiB5MT0iMjUiIHgyPSIzMCIgeTI9IjI1IiBzdHJva2Utd2lkdGg9IjIiIC8+PGxpbmUgeDE9IjIwIiB5MT0iMjUiIHgyPSIxMCIgeTI9IjI1IiBzdHJva2Utd2lkdGg9IjIiIC8+PGxpbmUgeDE9IjIwIiB5MT0iMzUiIHgyPSIxMCIgeTI9IjQ1
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Magnifying_glass_icon.svg/768px-Magnifying_glass_icon.svg.png"
+          alt="Search Icon"
+        />
+        <input type="text" id="studentID" placeholder="Enter student ID" />
+        <button type="submit">Search</button>
+      </div>
+    </form>
+    <div id="result"></div>
+
+    <script>
+      document.getElementById('searchForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var studentID = document.getElementById('studentID').value;
+        var url = 'https://script.google.com/macros/s/AKfycbzBvHQAKJzL7wD1CKaHG77gxsABDx_GNvOWb7AOgHdwWyvi0xnU9BVBjCm0jalAHqhJ/exec?id=' 
+                  + encodeURIComponent(studentID);
+        
+        fetch(url)
+          .then(response => response.text())
+          .then(status => {
+            var displayStatus = "";
+            var remark = "";
+            status = status.trim();
+            
+            if (status === "") {
+              displayStatus = "NOT YET PICKED UP";
+              remark = "<div style='color: red; font-weight: bold;'>Remark: Please pick your nameplate as soon as possible</div>";
+            } else if (status.toLowerCase() === "id not found" || status.toLowerCase() === "not found") {
+              displayStatus = "Not Found";
+              remark = "<div style='color: black; font-weight: bold;'>Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.</div>";
+            } else {
+              displayStatus = status;
+            }
+            
+            document.getElementById('result').innerHTML = "Status: " + displayStatus + "<br>" + remark;
+          })
+          .catch(error => {
+            document.getElementById('result').innerHTML = "<div style='color: black; font-weight: bold;'>Error: " + error + "</div>";
+          });
+      });
+    </script>
+  </body>
+</html>

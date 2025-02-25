@@ -7,58 +7,65 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        background-color: #fff;
-      }
-      /* Style the search form with dark red background and center alignment */
-      #searchForm {
-        background-color: #8B0000; /* Dark red */
+        background-color: #f4f4f4;
+        margin: 0;
         padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        text-align: center;
       }
-      /* Container for icon and input */
-      .input-container {
-        display: inline-flex;
+      /* Center and style the search form with a clean look */
+      #searchForm {
+        background-color: #fff;
+        padding: 15px 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        max-width: 400px;
+        margin: 0 auto;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
         align-items: center;
       }
-      /* Style the icon */
+      /* Container for the icon and input field */
+      .input-container {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+      }
+      /* Icon style (small size) */
       .search-icon {
-        width: 48px;
-        height: 48px;
-        margin-right: 10px;
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
       }
-      /* Larger text for the input field */
+      /* Input field styling for a professional, compact look */
       #searchForm input[type="text"] {
-        padding: 10px;
-        font-size: 2em;
-        border: none;
+        flex-grow: 1;
+        padding: 8px 10px;
+        font-size: 1em;
+        border: 1px solid #ccc;
         border-radius: 4px;
-        color: #8B0000;
       }
-      /* Larger text for the search button with white bold text */
+      /* Clean, compact button styling */
       #searchForm button {
-        padding: 10px 20px;
-        font-size: 2em;
-        font-weight: bold;
+        padding: 8px 15px;
+        font-size: 1em;
         color: #fff;
-        background-color: #a80000;
+        background-color: #007bff;
         border: none;
         border-radius: 4px;
         cursor: pointer;
+        margin-left: 10px;
       }
-      /* Style for the result area */
+      /* Result display styling */
       #result {
         margin-top: 20px;
         text-align: center;
-        font-size: 2em;
+        font-size: 1em;
       }
     </style>
   </head>
   <body>
     <form id="searchForm">
       <div class="input-container">
-        <!-- Image with encoded URL -->
+        <!-- Icon with a properly encoded URL -->
         <img
           src="https://raw.githubusercontent.com/Siem757/-search-interface/02a5fb67ffe5101ca60d4ee9ef725626812f8a58/Learning%20support%20center%20%281%29.png"
           alt="ID icon"
@@ -74,7 +81,8 @@
       document.getElementById("searchForm").addEventListener("submit", function(e) {
         e.preventDefault();
         var studentID = document.getElementById("studentID").value;
-        var url = "https://script.google.com/macros/s/AKfycbzBvHQAKJzL7wD1CKaHG77gxsABDx_GNvOWb7AOgHdwWyvi0xnU9BVBjCm0jalAHqhJ/exec?id=" + encodeURIComponent(studentID);
+        var url = "https://script.google.com/macros/s/AKfycbzBvHQAKJzL7wD1CKaHG77gxsABDx_GNvOWb7AOgHdwWyvi0xnU9BVBjCm0jalAHqhJ/exec?id=" 
+                  + encodeURIComponent(studentID);
         
         fetch(url)
           .then(response => response.json())
@@ -84,11 +92,11 @@
             
             if (data.error && data.error.toLowerCase().includes("not found")) {
               displayStatus = "ID Not Found";
-              remark = "<div style='color: black; font-weight: bold;'>Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.</div>";
+              remark = "<div style='color: #333; font-weight: bold;'>Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.</div>";
             }
             else if (data.status === "") {
               displayStatus = "NOT YET PICKED UP";
-              remark = "<div style='color: red; font-weight: bold;'>Remark: Please pick your nameplate as soon as possible</div>";
+              remark = "<div style='color: #d9534f; font-weight: bold;'>Remark: Please pick your nameplate as soon as possible</div>";
             }
             else {
               displayStatus = data.status;
@@ -99,7 +107,7 @@
           })
           .catch(error => {
             document.getElementById("result").innerHTML =
-              "<div style='color: black; font-weight: bold;'>Error: " + error + "</div>";
+              "<div style='color: #333; font-weight: bold;'>Error: " + error + "</div>";
           });
       });
     </script>

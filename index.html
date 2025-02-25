@@ -101,16 +101,22 @@
         fetch(url)
           .then(response => response.text())
           .then(text => {
-            if (!text) {
+            console.log("Raw response text:", text); // Debug log
+            var trimmedText = text.trim();
+            // If the response is empty, use a fallback object
+            if (!trimmedText) {
               throw new Error("Empty response from server");
             }
-            let data;
-            try {
-              data = JSON.parse(text);
-            } catch (e) {
-              throw new Error("Invalid JSON: " + text);
+            // Check if the response looks like JSON (starts with '{' or '[')
+            if (trimmedText[0] !== '{' && trimmedText[0] !== '[') {
+              throw new Error("Response not in JSON format: " + trimmedText);
             }
-            return data;
+            try {
+              return JSON.parse(trimmedText);
+            } catch (e) {
+              console.error("JSON parse error:", e, trimmedText);
+              throw new Error("Invalid JSON: " + trimmedText);
+            }
           })
           .then(data => {
             var status = data.status ? data.status.trim() : "No status provided";

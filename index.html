@@ -81,35 +81,34 @@
       document.getElementById("searchForm").addEventListener("submit", function(e) {
         e.preventDefault();
         var studentID = document.getElementById("studentID").value;
-        var url = "https://script.google.com/macros/s/AKfycbzBvHQAKJzL7wD1CKaHG77gxsABDx_GNvOWb7AOgHdwWyvi0xnU9BVBjCm0jalAHqhJ/exec?id=" 
-                  + encodeURIComponent(studentID);
+        var url = "https://script.google.com/macros/s/AKfycbzBvHQAKJzL7wD1CKaHG77gxsABDx_GNvOWb7AOgHdwWyvi0xnU9BVBjCm0jalAHqhJ/exec?id=" + encodeURIComponent(studentID);
         
         fetch(url)
           .then(response => response.text())
           .then(text => {
             let data;
-            if (text.trim() === "") {
-              // Treat empty response as a cell F11 that's empty
+            // Check if the response is empty or only whitespace
+            if (!text || text.trim() === "") {
               data = { status: "", error: "" };
             } else {
               try {
                 data = JSON.parse(text);
               } catch (err) {
-                document.getElementById("result").innerHTML =
-                  "<div style='color: #333; font-weight: bold;'>Error: Invalid JSON returned.</div>";
-                return;
+                console.error("JSON parse error:", err, "Response text:", text);
+                // Fallback to default values if JSON is invalid
+                data = { status: "", error: "" };
               }
             }
             
             let displayStatus = "";
             let remark = "";
             
-            // If the error property contains "not found"
+            // Check for error indicating "not found"
             if (data.error && data.error.toLowerCase().includes("not found")) {
               displayStatus = "ID Not Found";
               remark = "<div style='color: #333; font-weight: bold;'>Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.</div>";
             }
-            // If cell F11 is empty (status is empty)
+            // Check if status is empty (i.e. cell F11 is empty)
             else if (data.status === "") {
               displayStatus = "NOT YET PICKED UP";
               remark = "<div style='color: #d9534f; font-weight: bold;'>Remark: Please pick your nameplate as soon as possible</div>";
@@ -119,8 +118,7 @@
               displayStatus = data.status;
             }
             
-            document.getElementById("result").innerHTML =
-              "Status: " + displayStatus + "<br>" + remark;
+            document.getElementById("result").innerHTML = "Status: " + displayStatus + "<br>" + remark;
           })
           .catch(error => {
             document.getElementById("result").innerHTML =

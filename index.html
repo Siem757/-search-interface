@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Nameplate Search</title>
     <style>
       body {
@@ -11,60 +11,72 @@
       }
       /* Style the search form with dark red background and center alignment */
       #searchForm {
-        background-color: #8B0000; /* Dark red */
+        background-color: #8B0000;
         padding: 20px;
         border-radius: 8px;
-        margin-bottom: 20px; /* Space below the search form */
+        margin-bottom: 20px;
         text-align: center;
       }
-      /* A container to hold the icon and the input side by side */
+      /* Container to hold the icon and the input side by side */
       .input-container {
         display: inline-flex;
         align-items: center;
       }
-      /* Style the icon (width/height can be changed as desired) */
+      /* Inline SVG icon styling */
       .search-icon {
         width: 48px;
         height: 48px;
         margin-right: 10px;
       }
-      /* Larger text for the input field */
+      /* Larger text for the input field with vertical centering */
       #searchForm input[type="text"] {
         padding: 10px;
-        font-size: 2em; /* Increased font size */
+        font-size: 2em;
         border: none;
         border-radius: 4px;
         color: #8B0000;
+        vertical-align: middle;
       }
-      /* Larger text for the search button with white bold text */
+      /* Larger text for the search button with white bold text and vertical centering */
       #searchForm button {
         padding: 10px 20px;
-        font-size: 2em; /* Increased font size */
+        font-size: 2em;
         font-weight: bold;
-        color: #fff; /* White text */
+        color: #fff;
         background-color: #a80000;
         border: none;
         border-radius: 4px;
         cursor: pointer;
+        vertical-align: middle;
       }
       /* Style for the result area with larger text and additional spacing */
       #result {
         margin-top: 20px;
         text-align: center;
-        font-size: 2em; /* Increased font size for the result text */
+        font-size: 2em;
       }
     </style>
   </head>
   <body>
     <form id="searchForm">
       <div class="input-container">
-        <!-- This is a small base64 PNG acting as a placeholder ID icon -->
-        <img
-          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAqCAYAAADQ9L6OAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEB0lEQVR4nO3WT2gcVRwH8Pd0LS6cQCQXELVhoPpLA6unE2EEBwODDPwESRQuh3FSQgQqJ0KYURMRKwyIGLQKhlwj9R9EHXqmVnLmmLXKrT+pt67/h9r8Nw3Zkzm+z7dOv9+c99557fznPFY0q2U0zK7LBN1LjZjcr/TDK6/7UPNdlwut0uN2A8wBVks21ANtGlwAnkIQShZgnfSqGAOsA4Ig6shquC+3esbcJT5wK9TVZz8NnztM2gexlP0lB2Q7CmwBGLKzo0EVK4jJr8V3PdeNhsN8wKwcxL5ugEsRfU+ODowrR/1CLM3k3i+euGLptbdOErw1iy3+D1rt5G+NgM4QkArIPW29qiyQjrkhCwM9JGgFKWIB0NXu0UZrOk+OQia6dLU5Zj5Riiu8uSe3wABd6+gqM2rB1hB7J9pskOIdZ6heI8z2RkpcT8ejqOC9yS9ja2hx2qf9aF1Lrl9g33ze1Dz9fOEhIglFz1rHr+6hbBo93zKsPzTTwTHGtc6BvI7c9ZTTi/92Lo0G1kMJNRq+PX9//L17zZNVc4/cbn+gRHzWkeNNDBm+4crGPZcPF+FofpCnmGEUeAcjZxFjok5zi93WgrHgr2ajvbO8N2WR3adfndHFqNGZ0JtE2kKCDOyrv6Kz+IXRz1l2Ad2OgOFk9ov4gB/Wb0ihrgmT/6ARAx/RIm9YimFHEOfiIuB6NkN0OdB9u2PDL6HSJ/ev7IzXX1r9Q2zX4twTXRPGAbvH20hqZbGLNZyKPu86/L9T/wP9Jl/hWWg2dAAAAAElFTkSuQmCC"
-          alt="ID icon"
-          class="search-icon"
-        />
-        <input type="text" id="studentID" placeholder="Enter your student ID">
+        <!-- Inline SVG icon: A stickman holding a magnifier -->
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <!-- Stickman Head -->
+          <circle cx="20" cy="15" r="5" stroke="#fff" stroke-width="2" fill="none" />
+          <!-- Stickman Body -->
+          <line x1="20" y1="20" x2="20" y2="35" stroke="#fff" stroke-width="2" />
+          <!-- Stickman Arms -->
+          <line x1="20" y1="25" x2="30" y2="25" stroke="#fff" stroke-width="2" />
+          <line x1="20" y1="25" x2="10" y2="25" stroke="#fff" stroke-width="2" />
+          <!-- Stickman Legs -->
+          <line x1="20" y1="35" x2="10" y2="45" stroke="#fff" stroke-width="2" />
+          <line x1="20" y1="35" x2="30" y2="45" stroke="#fff" stroke-width="2" />
+          <!-- Magnifier (circle and handle) held by the right arm -->
+          <circle cx="33" cy="25" r="6" stroke="#fff" stroke-width="2" fill="none" />
+          <line x1="37" y1="29" x2="45" y2="37" stroke="#fff" stroke-width="2" />
+        </svg>
+        <input type="text" id="studentID" placeholder="Enter your student ID" />
       </div>
       <button type="submit">Search</button>
     </form>

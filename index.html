@@ -11,14 +11,14 @@
         margin: 0;
         padding: 20px;
       }
-      /* Center and style the search form with a clean, professional look */
+      /* Center and style the search form (small, clean, professional) */
       #searchForm {
         background-color: #fff;
         padding: 15px 20px;
         border: 1px solid #ddd;
         border-radius: 4px;
         max-width: 400px;
-        margin: 0 auto;
+        margin: 20px auto;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         display: flex;
         align-items: center;
@@ -35,7 +35,7 @@
         height: 24px;
         margin-right: 8px;
       }
-      /* Input field styling for a professional, compact look */
+      /* Input field styling */
       #searchForm input[type="text"] {
         flex-grow: 1;
         padding: 8px 10px;
@@ -65,7 +65,7 @@
   <body>
     <form id="searchForm">
       <div class="input-container">
-        <!-- Use the properly encoded URL for your icon -->
+        <!-- Icon (ensure URL is properly encoded) -->
         <img
           src="https://raw.githubusercontent.com/Siem757/-search-interface/02a5fb67ffe5101ca60d4ee9ef725626812f8a58/Learning%20support%20center%20%281%29.png"
           alt="ID icon"
@@ -81,44 +81,41 @@
       document.getElementById("searchForm").addEventListener("submit", function(e) {
         e.preventDefault();
         var studentID = document.getElementById("studentID").value;
-        var url = "https://script.google.com/macros/s/AKfycbzBvHQAKJzL7wD1CKaHG77gxsABDx_GNvOWb7AOgHdwWyvi0xnU9BVBjCm0jalAHqhJ/exec?id=" + encodeURIComponent(studentID);
+        var url = "https://script.google.com/macros/s/AKfycbzBvHQAKJzL7wD1CKaHG77gxsABDx_GNvOWb7AOgHdwWyvi0xnU9BVBjCm0jalAHqhJ/exec?id=" 
+                  + encodeURIComponent(studentID);
         
         fetch(url)
           .then(response => response.text())
           .then(text => {
+            console.log("Response text:", text);
+            // Use a fallback: if text is empty, JSON.parse("{}") will give an empty object.
             let data;
-            // Check if the response is empty or only whitespace
-            if (!text || text.trim() === "") {
-              data = { status: "", error: "" };
-            } else {
-              try {
-                data = JSON.parse(text);
-              } catch (err) {
-                console.error("JSON parse error:", err, "Response text:", text);
-                // Fallback to default values if JSON is invalid
-                data = { status: "", error: "" };
-              }
+            try {
+              data = JSON.parse(text || "{}");
+            } catch (err) {
+              console.error("JSON parse error:", err, "Response text:", text);
+              data = {};
             }
+            
+            // Use default empty values if not present
+            let statusVal = (typeof data.status === "string") ? data.status : "";
+            let errorVal = (typeof data.error === "string") ? data.error : "";
             
             let displayStatus = "";
             let remark = "";
             
-            // Check for error indicating "not found"
-            if (data.error && data.error.toLowerCase().includes("not found")) {
+            if (errorVal.toLowerCase().includes("not found")) {
               displayStatus = "ID Not Found";
               remark = "<div style='color: #333; font-weight: bold;'>Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.</div>";
-            }
-            // Check if status is empty (i.e. cell F11 is empty)
-            else if (data.status === "") {
+            } else if (statusVal.trim() === "") {
               displayStatus = "NOT YET PICKED UP";
               remark = "<div style='color: #d9534f; font-weight: bold;'>Remark: Please pick your nameplate as soon as possible</div>";
-            }
-            // Otherwise, show the returned status
-            else {
-              displayStatus = data.status;
+            } else {
+              displayStatus = statusVal;
             }
             
-            document.getElementById("result").innerHTML = "Status: " + displayStatus + "<br>" + remark;
+            document.getElementById("result").innerHTML =
+              "Status: " + displayStatus + "<br>" + remark;
           })
           .catch(error => {
             document.getElementById("result").innerHTML =

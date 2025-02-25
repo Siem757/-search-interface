@@ -63,12 +63,22 @@
         text-align: center;
         font-size: 1.5em;
       }
+      /* Information Box */
+      #infoBox {
+        margin-top: 20px;
+        border: 2px solid #8B0000;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: left;
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+      }
     </style>
   </head>
   <body>
     <form id="searchForm">
       <div class="search-row">
-        <!-- Use a magnifier icon -->
         <img
           class="search-icon"
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Magnifying_glass_icon.svg/768px-Magnifying_glass_icon.svg.png"
@@ -79,7 +89,8 @@
       </div>
     </form>
     <div id="result"></div>
-
+    <div id="infoBox" style="display: none;"></div>
+    
     <script>
       document.getElementById('searchForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -88,23 +99,19 @@
                   + encodeURIComponent(studentID);
         
         fetch(url)
-          .then(response => response.text())
-          .then(status => {
-            var displayStatus = "";
-            var remark = "";
-            status = status.trim();
+          .then(response => response.json())
+          .then(data => {
+            var status = data.status.trim();
+            var infoBox = document.getElementById('infoBox');
+            infoBox.style.display = 'block';
             
-            if (status === "") {
-              displayStatus = "NOT YET PICKED UP";
-              remark = "<div style='color: red; font-weight: bold;'>Remark: Please pick your nameplate as soon as possible</div>";
-            } else if (status.toLowerCase() === "id not found" || status.toLowerCase() === "not found") {
-              displayStatus = "Not Found";
-              remark = "<div style='color: black; font-weight: bold;'>Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.</div>";
-            } else {
-              displayStatus = status;
-            }
-            
-            document.getElementById('result').innerHTML = "Status: " + displayStatus + "<br>" + remark;
+            infoBox.innerHTML = `
+              <strong>Issued Date:</strong> ${data.issuedDate} <br>
+              <strong>Name:</strong> ${data.name} <br>
+              <strong>ID:</strong> ${data.id} <br>
+              <strong>Disposal Date:</strong> ${data.disposalDate} <br>
+              <strong>Status:</strong> ${status} 
+            `;
           })
           .catch(error => {
             document.getElementById('result').innerHTML = "<div style='color: black; font-weight: bold;'>Error: " + error + "</div>";

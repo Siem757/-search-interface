@@ -11,7 +11,7 @@
         margin: 0;
         padding: 20px;
       }
-      /* Center and style the search form with a clean look */
+      /* Center and style the search form with a clean, professional look */
       #searchForm {
         background-color: #fff;
         padding: 15px 20px;
@@ -43,7 +43,7 @@
         border: 1px solid #ccc;
         border-radius: 4px;
       }
-      /* Clean, compact button styling */
+      /* Compact button styling */
       #searchForm button {
         padding: 8px 15px;
         font-size: 1em;
@@ -65,7 +65,7 @@
   <body>
     <form id="searchForm">
       <div class="input-container">
-        <!-- Icon with a properly encoded URL -->
+        <!-- Use the properly encoded URL for your icon -->
         <img
           src="https://raw.githubusercontent.com/Siem757/-search-interface/02a5fb67ffe5101ca60d4ee9ef725626812f8a58/Learning%20support%20center%20%281%29.png"
           alt="ID icon"
@@ -85,19 +85,36 @@
                   + encodeURIComponent(studentID);
         
         fetch(url)
-          .then(response => response.json())
-          .then(data => {
-            var displayStatus = "";
-            var remark = "";
+          .then(response => response.text())
+          .then(text => {
+            let data;
+            if (text.trim() === "") {
+              // Treat empty response as a cell F11 that's empty
+              data = { status: "", error: "" };
+            } else {
+              try {
+                data = JSON.parse(text);
+              } catch (err) {
+                document.getElementById("result").innerHTML =
+                  "<div style='color: #333; font-weight: bold;'>Error: Invalid JSON returned.</div>";
+                return;
+              }
+            }
             
+            let displayStatus = "";
+            let remark = "";
+            
+            // If the error property contains "not found"
             if (data.error && data.error.toLowerCase().includes("not found")) {
               displayStatus = "ID Not Found";
               remark = "<div style='color: #333; font-weight: bold;'>Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.</div>";
             }
+            // If cell F11 is empty (status is empty)
             else if (data.status === "") {
               displayStatus = "NOT YET PICKED UP";
               remark = "<div style='color: #d9534f; font-weight: bold;'>Remark: Please pick your nameplate as soon as possible</div>";
             }
+            // Otherwise, show the returned status
             else {
               displayStatus = data.status;
             }

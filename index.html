@@ -1,26 +1,39 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Nameplate Search</title>
     <style>
       body {
         font-family: Arial, sans-serif;
-        background-color: #fff;
+        background-color: #f9f9f9;
+        margin: 0;
         padding: 20px;
       }
-      form {
-        margin-bottom: 20px;
-        text-align: center;
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
       }
-      input[type="text"] {
+      /* Search form styling */
+      #searchForm {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      #searchForm input[type="text"] {
+        flex: 1;
         padding: 10px;
         font-size: 1em;
         border: 1px solid #ccc;
         border-radius: 4px;
       }
-      button {
+      #searchForm button {
         padding: 10px 20px;
         font-size: 1em;
         border: none;
@@ -28,20 +41,50 @@
         background-color: #8B0000;
         color: #fff;
         cursor: pointer;
-        margin-left: 10px;
       }
+      /* Magnifier icon styling */
+      .magnifier-icon {
+        width: 24px;
+        height: 24px;
+      }
+      /* Result area styling */
       #result {
-        font-size: 1.2em;
-        text-align: center;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        font-size: 1.1em;
+        color: #333;
+      }
+      .status-title {
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #8B0000;
+      }
+      .status-item {
+        margin-bottom: 4px;
+      }
+      .remark {
+        margin-top: 10px;
+        font-style: italic;
+        color: #d9534f;
       }
     </style>
   </head>
   <body>
-    <form id="searchForm">
-      <input type="text" id="studentID" placeholder="Enter your student ID">
-      <button type="submit">Search</button>
-    </form>
-    <div id="result"></div>
+    <div class="container">
+      <form id="searchForm">
+        <!-- Magnifier icon added next to the input -->
+        <img
+          class="magnifier-icon"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Magnifying_glass_icon.svg/768px-Magnifying_glass_icon.svg.png"
+          alt="Magnifier Icon"
+        />
+        <input type="text" id="studentID" placeholder="Enter your student ID" />
+        <button type="submit">Search</button>
+      </form>
+      <div id="result"></div>
+    </div>
     
     <script>
       document.getElementById('searchForm').addEventListener('submit', function(e) {
@@ -53,24 +96,28 @@
         fetch(url)
           .then(response => response.text())
           .then(status => {
+            status = status.trim();
             var displayStatus = "";
             var remark = "";
-            status = status.trim();
             
             if (status === "") {
               displayStatus = "NOT YET PICKED UP";
-              remark = "<div style='color: red; font-weight: bold;'>Remark: Please pick your nameplate as soon as possible</div>";
+              remark = "Remark: Please pick your nameplate as soon as possible";
             } else if (status.toLowerCase() === "id not found" || status.toLowerCase() === "not found") {
               displayStatus = "Not Found";
-              remark = "<div style='color: black; font-weight: bold;'>Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.</div>";
+              remark = "Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.";
             } else {
               displayStatus = status;
             }
             
-            document.getElementById('result').innerHTML = "Status: " + displayStatus + "<br>" + remark;
+            document.getElementById('result').innerHTML = `
+              <div class="status-title">Status Details</div>
+              <div class="status-item"><strong>Status:</strong> ${displayStatus}</div>
+              ${ remark ? `<div class="remark">${remark}</div>` : "" }
+            `;
           })
           .catch(error => {
-            document.getElementById('result').innerHTML = "<div style='color: black; font-weight: bold;'>Error: " + error + "</div>";
+            document.getElementById('result').innerHTML = `<div style="color: black; font-weight: bold;">Error: ${error.message}</div>`;
           });
       });
     </script>

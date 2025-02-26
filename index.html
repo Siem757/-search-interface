@@ -1,43 +1,161 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Nameplate Search</title>
+    <style>
+      /* Reset and base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+      }
+      /* Container */
+      .container {
+        width: 90%;
+        max-width: 500px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      /* Header with dark red gradient */
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+        padding: 20px;
+        background: linear-gradient(45deg, #8B0000, #a80000);
+        border-radius: 10px;
+        color: #fff;
+      }
+      .header h1 {
+        font-size: 1.5em;
+      }
+      /* Search form and bar */
+      #searchForm {
+        margin-bottom: 20px;
+      }
+      .search-bar {
+        background-color: #8B0000;
+        border-radius: 5px;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .search-bar input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        font-size: 1em;
+        border: none;
+        border-radius: 5px;
+      }
+      .search-bar button {
+        padding: 10px 20px;
+        font-size: 1em;
+        border: none;
+        border-radius: 5px;
+        background-color: #a80000;
+        color: #fff;
+        cursor: pointer;
+      }
+      /* Spinner styles */
+      .spinner {
+        border: 4px solid #f3f3f3; /* Light grey */
+        border-top: 4px solid #8B0000; /* Dark red */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      /* Responsive adjustments */
+      @media (max-width: 480px) {
+        .search-bar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .search-bar input[type="text"],
+        .search-bar button {
+          width: 100%;
+          margin: 0;
+        }
+        .search-bar button {
+          margin-top: 10px;
+        }
+      }
+      /* Result display */
+      #result {
+        text-align: center;
+        font-size: 1.2em;
+        color: #333;
+      }
+      .remark {
+        margin-top: 10px;
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
-    <form id="searchForm">
-      <input type="text" id="studentID" placeholder="Enter your student ID">
-      <button type="submit">Search</button>
-    </form>
-    <div id="result"></div>
+    <div class="container">
+      <div class="header">
+        <h1>Student Nameplate Search</h1>
+      </div>
+      <form id="searchForm">
+        <div class="search-bar">
+          <input type="text" id="studentID" placeholder="Enter your student ID" />
+          <button type="submit">Search</button>
+        </div>
+      </form>
+      <div id="result"></div>
+    </div>
     
     <script>
       document.getElementById('searchForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        var studentID = document.getElementById('studentID').value;
-        // Your new web app URL:
-        var url = 'https://script.google.com/macros/s/AKfycbwEUK6Rpn-pQjcwKuG-37D5yvNxvIwKOSDvU8zWCdxGXbZEIwBuWCk0H9VYFcIiKj3c/exec?id=' 
+        var studentID = document.getElementById('studentID').value.trim();
+        var url = 'https://script.google.com/macros/s/AKfycbxNmGAJRG5J4zJ620l-8X8slt8Y6QlgeZYFJ0SJlDauGFYYkyWCfJftQJlYXqwrJU_e/exec?id=' 
                   + encodeURIComponent(studentID);
+        
+        // Show the loading spinner
+        document.getElementById('result').innerHTML = '<div class="spinner"></div>';
+        
+        // Record the start time for the delay
+        var startTime = Date.now();
         
         fetch(url)
           .then(response => response.text())
           .then(status => {
-            var displayStatus = "";
-            var remark = "";
-            status = status.trim();
-            
-            if (status === "") {
-              displayStatus = "NOT YET PICKED UP";
-              remark = "<div style='color: red; font-weight: bold;'>Remark: Please pick your nameplate as soon as possible</div>";
-            } else if (status.toLowerCase() === "id not found" || status.toLowerCase() === "not found") {
-              displayStatus = "Not Found";
-              remark = "<div style='color: black; font-weight: bold;'>Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.</div>";
-            } else {
-              displayStatus = status;
-            }
-            
-            document.getElementById('result').innerHTML = "Status: " + displayStatus + "<br>" + remark;
+            var elapsed = Date.now() - startTime;
+            var minDelay = 1500; // 1.5 seconds
+            var delay = Math.max(minDelay - elapsed, 0);
+            setTimeout(function() {
+              var displayStatus = "";
+              var remark = "";
+              status = status.trim();
+              
+              if (status === "") {
+                displayStatus = "NOT YET PICKED UP";
+                remark = "<div class='remark' style='color: red;'>Remark: Please pick your nameplate as soon as possible</div>";
+              } else if (status.toLowerCase() === "id not found" || status.toLowerCase() === "not found") {
+                displayStatus = "Not Found";
+                remark = "<div class='remark' style='color: black;'>Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.</div>";
+              } else {
+                displayStatus = status;
+              }
+              
+              document.getElementById('result').innerHTML = "<strong>Status:</strong> " + displayStatus + "<br>" + remark;
+            }, delay);
           })
           .catch(error => {
             document.getElementById('result').innerHTML = "<div style='color: black; font-weight: bold;'>Error: " + error + "</div>";

@@ -67,8 +67,8 @@
       }
       /* Spinner styles */
       .spinner {
-        border: 4px solid #f3f3f3; /* Light grey */
-        border-top: 4px solid #8B0000; /* Dark red */
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #8B0000;
         border-radius: 50%;
         width: 40px;
         height: 40px;
@@ -130,28 +130,43 @@
         // Show the loading spinner
         document.getElementById('result').innerHTML = '<div class="spinner"></div>';
         
-        // Record the start time for the delay
+        // Record the start time for the minimum delay
         var startTime = Date.now();
+        var minDelay = 1500; // 1.5 seconds
         
         fetch(url)
           .then(response => response.text())
-          .then(status => {
+          .then(statusText => {
             var elapsed = Date.now() - startTime;
-            var minDelay = 1500; // 1.5 seconds
             var delay = Math.max(minDelay - elapsed, 0);
             setTimeout(function() {
+              // Attempt to parse as JSON if applicable
+              statusText = statusText.trim();
+              var status = statusText;
+              if (statusText.charAt(0) === '{') {
+                try {
+                  var data = JSON.parse(statusText);
+                  if (data.status !== undefined) {
+                    status = data.status;
+                  }
+                } catch (e) {
+                  status = statusText;
+                }
+              }
+              
               var displayStatus = "";
               var remark = "";
-              status = status.trim();
               
               if (status === "") {
                 displayStatus = "NOT YET PICKED UP";
-                remark = "<div class='remark' style='color: red;'>Remark: Please pick your nameplate as soon as possible</div>";
-              } else if (status.toLowerCase() === "id not found" || status.toLowerCase() === "not found") {
-                displayStatus = "Not Found";
-                remark = "<div class='remark' style='color: black;'>Note: Your nameplate is either not ready or your request has not yet been approved. Please wait patiently.</div>";
+                remark = "<div class='remark' style='color: red;'>Please pick up your nameplate at the LSC Office as soon as possible.</div>";
+              } else if (status.toLowerCase() === "picked up") {
+                displayStatus = '<span style="color: darkgreen;">You have already picked up your Nameplate. Thank you! 🙏💕</span>';
+                remark = "";
               } else {
-                displayStatus = status;
+                // For any other non-empty response, treat it as not found.
+                displayStatus = '<strong style="color: black;">Nameplate not found</strong>';
+                remark = "<div class='remark' style='color: black; font-weight: normal;'>Your Nameplate cannot be found at the LSC Office. Your newly requested nameplate will be ready in a few weeks. Or perhaps, you may have lost it somewhere💸🫠?</div>";
               }
               
               document.getElementById('result').innerHTML = "<strong>Status:</strong> " + displayStatus + "<br>" + remark;
